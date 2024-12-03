@@ -19,8 +19,21 @@ def norm(vec):
 
 
 def cosine_similarity(vec1, vec2):
-    pass
+    absvec1 = 0
+    absvec2 = 0
+    dot_product = 0
 
+    for word, count in vec1.items():
+        absvec1 += (count)**2
+        if word in vec2:
+            dot_product += count * vec2[word]
+    for count in vec2.values():
+        absvec2 += (count)**2 
+
+    magnitude = math.sqrt(absvec1) * math.sqrt(absvec2)
+    if magnitude == 0:
+        return 0
+    return dot_product / magnitude
 
 def build_semantic_descriptors(sentences):
     pass
