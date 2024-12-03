@@ -4,7 +4,8 @@ Author: Michael Guerzhoy. Last modified: Nov. 20, 2023.
 '''
 
 import math
-from collections import defaultdict
+from collections import defaultdict # Used in def build_semantic_descriptors
+import re # Used in def build_semantic_descriptors_from_files
 
 def norm(vec):
     '''Return the norm of a vector stored as a dictionary, as 
@@ -48,9 +49,25 @@ def build_semantic_descriptors(sentences):
     return semantic_descriptors
 
 def build_semantic_descriptors_from_files(filenames):
-    pass
+    list_of_sentences = []
+    
+    for file in filenames:
+        with open(filenames[file], "r", encoding = "latin1") as file:
+            text = file.read().lower()
 
+            text = re.sub(r'[",:;()\-–]', ' ', text) # Removes any unecessary punctuation
+            text = re.sub(r'\s+', ' ', text) # Removes any extra spaces
 
+            sentences = re.split(r'[.!?]', text) # Splits the text into sentences based on the three punctuation marks
+
+            for sentence in sentences:
+                words = sentence.split()
+                if words: # Double checks to see if words is empty
+                    list_of_sentences.append(words)
+
+    semantic_descriptors_from_files = build_semantic_descriptors(list_of_sentences)
+
+    return semantic_descriptors_from_files
 
 def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
     pass
