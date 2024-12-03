@@ -4,7 +4,7 @@ Author: Michael Guerzhoy. Last modified: Nov. 20, 2023.
 '''
 
 import math
-
+from collections import defaultdict
 
 def norm(vec):
     '''Return the norm of a vector stored as a dictionary, as 
@@ -36,7 +36,16 @@ def cosine_similarity(vec1, vec2):
     return dot_product / magnitude
 
 def build_semantic_descriptors(sentences):
-    pass
+    semantic_descriptors = defaultdict(lambda: defaultdict(int))
+
+    for sentence in sentences:
+        unique_words = set(sentence)
+        for word1 in unique_words:
+            for word2 in unique_words:
+                if word1 != word2:
+                    semantic_descriptors[word1][word2] += 1
+
+    return semantic_descriptors
 
 def build_semantic_descriptors_from_files(filenames):
     pass
