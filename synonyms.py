@@ -26,7 +26,7 @@ def cosine_similarity(vec1, vec2):
 
     for word, count in vec1.items():
         absvec1 += (count)**2
-        if word in vec2:
+        if word in vec2: # If the word is in the second word's dictionary of co-occurences continue
             dot_product += count * vec2[word]
     for count in vec2.values():
         absvec2 += (count)**2 
@@ -37,14 +37,14 @@ def cosine_similarity(vec1, vec2):
     return dot_product / magnitude
 
 def build_semantic_descriptors(sentences):
-    semantic_descriptors = defaultdict(lambda: defaultdict(int))
+    semantic_descriptors = defaultdict(lambda: defaultdict(int)) # Makes an empty nested dictionary
 
     for sentence in sentences:
-        unique_words = set(sentence)
+        unique_words = set(sentence) # Removes duplicate words in a sentence so that we don't double count
         for word1 in unique_words:
             for word2 in unique_words:
-                if word1 != word2:
-                    semantic_descriptors[word1][word2] += 1
+                if word1 != word2: # If the word is not itself continue
+                    semantic_descriptors[word1][word2] += 1 # Adds one co-occurence to the sub-dictionary
 
     return semantic_descriptors
 
