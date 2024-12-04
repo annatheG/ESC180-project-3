@@ -70,8 +70,10 @@ def build_semantic_descriptors_from_files(filenames):
     return semantic_descriptors_from_files
 
 def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
+
     pass
 
 
 def run_similarity_test(filename, semantic_descriptors, similarity_fn):
+    
     pass
