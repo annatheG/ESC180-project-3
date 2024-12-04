@@ -4,7 +4,6 @@ Author: Michael Guerzhoy. Last modified: Nov. 20, 2023.
 '''
 
 import math
-from collections import defaultdict # Used in def build_semantic_descriptors
 import re # Used in def build_semantic_descriptors_from_files
 
 def norm(vec):
@@ -37,36 +36,52 @@ def cosine_similarity(vec1, vec2):
     return dot_product / magnitude
 
 def build_semantic_descriptors(sentences):
-    semantic_descriptors = defaultdict(lambda: defaultdict(int)) # Makes an empty nested dictionary
+    semantic_descriptors = {}  # Initialize empty dictionary
 
     for sentence in sentences:
-        unique_words = set(sentence) # Removes duplicate words in a sentence so that we don't double count
+        unique_words = set(sentence)  # Removes duplicate words in a sentence
         for word1 in unique_words:
             if word1 not in semantic_descriptors:
                 semantic_descriptors[word1] = {}
             for word2 in unique_words:
-                if word1 != word2: # If the word is not itself continue
+                if word1 != word2:  # If the word is not itself, continue
                     if word2 in semantic_descriptors[word1]:
-                        semantic_descriptors[word1][word2] += 1 # Adds one co-occurence to the sub-dictionary
+                        semantic_descriptors[word1][word2] += 1  # Increment co-occurrence
                     else:
-                        semantic_descriptors[word1][word2] = 1
+                        semantic_descriptors[word1][word2] = 1  # Initialize co-occurrence
     return semantic_descriptors
 
 def build_semantic_descriptors_from_files(filenames):
     list_of_sentences = []
     
     for file in filenames:
-        with open(file, "r", encoding = "latin1") as file:
+        with open(file, "r", encoding="latin1") as file:
             text = file.read().lower()
 
-            text = re.sub(r'[",:;()\-–]', ' ', text) # Removes any unecessary punctuation
-            text = re.sub(r'\s+', ' ', text) # Removes any extra spaces
+            # Replace specific punctuation with spaces
+            for char in '",:;()-–':
+                text = text.replace(char, ' ')
 
-            sentences = re.split(r'[.!?]', text) # Splits the text into sentences based on the three punctuation marks
+            # Replace multiple spaces with a single space
+            text = ' '.join(text.split())
 
+            # Split sentences based on `.`, `!`, `?`
+            sentences = []
+            temp_sentence = []
+            for char in text:
+                if char in '.!?':
+                    if temp_sentence:
+                        sentences.append(''.join(temp_sentence).strip())
+                        temp_sentence = []
+                else:
+                    temp_sentence.append(char)
+            if temp_sentence:  # Add the last sentence if present
+                sentences.append(''.join(temp_sentence).strip())
+
+            # Split each sentence into words and add to the list
             for sentence in sentences:
                 words = sentence.split()
-                if words: # Double checks to see if words is empty
+                if words:  # Double check if words is not empty
                     list_of_sentences.append(words)
 
     semantic_descriptors_from_files = build_semantic_descriptors(list_of_sentences)
