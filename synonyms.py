@@ -102,10 +102,10 @@ def run_similarity_test(filename, semantic_descriptors, similarity_fn):
             target = words[0]
             answer = words[1]
             choices = words[2:]
-
             guess = most_similar_word(target, choices, semantic_descriptors, similarity_fn)
             if guess == answer:
                 correct+=1
-        percent_correct = correct/questions * 100
+    
+        percent_correct = correct/len(file.readlines) * 100
     
     return percent_correct
