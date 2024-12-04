@@ -52,7 +52,7 @@ def build_semantic_descriptors_from_files(filenames):
     list_of_sentences = []
     
     for file in filenames:
-        with open(filenames[file], "r", encoding = "latin1") as file:
+        with open(file, "r", encoding = "latin1") as file:
             text = file.read().lower()
 
             text = re.sub(r'[",:;()\-–]', ' ', text) # Removes any unecessary punctuation
