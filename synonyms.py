@@ -70,10 +70,42 @@ def build_semantic_descriptors_from_files(filenames):
     return semantic_descriptors_from_files
 
 def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
+    max_similarity = 0
+    least_ind = 0
 
-    pass
+    # check if similarity can be computed
+    for i in range(len(choices)):
+        if word not in semantic_descriptors:
+            similarity = -1
+        elif choices[i] not in semantic_descriptors:
+            similarity = -1
+        else:
+            #check the semantic similarity
+            similarity = similarity_fn(semantic_descriptors[word], semantic_descriptors[choices[i]])
+
+        #check if it xhanges the max value
+        if similarity > max_similarity:
+            max_similarity = similarity
+            least_ind = i
+        elif similarity == max_similarity:
+            if i < least_ind:
+                least_ind = i
+
+    return choices[least_ind]
 
 
 def run_similarity_test(filename, semantic_descriptors, similarity_fn):
+    correct = 0
+    with open(filename, "r", encoding = "latin1") as file:
+        for questions in file.readlines():
+            words = questions.split()
+            target = words[0]
+            answer = words[1]
+            choices = words[2:]
+
+            guess = most_similar_word(target, choices, semantic_descriptors, similarity_fn)
+            if guess == answer:
+                correct+=1
+        percent_correct = correct/questions * 100
     
-    pass
+    return percent_correct
