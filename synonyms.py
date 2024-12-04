@@ -86,10 +86,10 @@ def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
             #check the semantic similarity
             similarity = similarity_fn(semantic_descriptors[word], semantic_descriptors[choices[i]])
 
-        #check if it xhanges the max value
-        if similarity > max_similarity:
-            max_similarity = similarity
-            least_ind = i
+            #check if it xhanges the max value
+            if similarity > max_similarity:
+                max_similarity = similarity
+                least_ind = i
 
     return choices[least_ind]
 
