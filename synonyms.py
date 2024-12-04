@@ -42,10 +42,14 @@ def build_semantic_descriptors(sentences):
     for sentence in sentences:
         unique_words = set(sentence) # Removes duplicate words in a sentence so that we don't double count
         for word1 in unique_words:
+            if word1 not in semantic_descriptors:
+                semantic_descriptors[word1] = {}
             for word2 in unique_words:
                 if word1 != word2: # If the word is not itself continue
-                    semantic_descriptors[word1][word2] += 1 # Adds one co-occurence to the sub-dictionary
-
+                    if word2 in semantic_descriptors[word1]:
+                        semantic_descriptors[word1][word2] += 1 # Adds one co-occurence to the sub-dictionary
+                    else:
+                        semantic_descriptors[word1][word2] = 1
     return semantic_descriptors
 
 def build_semantic_descriptors_from_files(filenames):
