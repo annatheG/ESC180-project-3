@@ -72,12 +72,11 @@ def build_semantic_descriptors_from_files(filenames):
 def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
     max_similarity = -1
     least_ind = 0
-
+    if word not in semantic_descriptors:
+        return choices[0]
     # check if similarity can be computed
     for i in range(len(choices)):
-        if word not in semantic_descriptors:
-            similarity = -1
-        elif choices[i] not in semantic_descriptors:
+        if choices[i] not in semantic_descriptors:
             similarity = -1
         else:
             #check the semantic similarity
