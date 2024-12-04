@@ -70,7 +70,7 @@ def build_semantic_descriptors_from_files(filenames):
     return semantic_descriptors_from_files
 
 def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
-    max_similarity = 0
+    max_similarity = -1
     least_ind = 0
 
     # check if similarity can be computed
@@ -87,9 +87,6 @@ def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
         if similarity > max_similarity:
             max_similarity = similarity
             least_ind = i
-        elif similarity == max_similarity:
-            if i < least_ind:
-                least_ind = i
 
     return choices[least_ind]
 
