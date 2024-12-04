@@ -88,40 +88,39 @@ def build_semantic_descriptors_from_files(filenames):
 
     return semantic_descriptors_from_files
 
+def compute_similarity(wordvec, choices, semantic_descriptors, similarity_fn):
+    choice_vec = semantic_descriptors.get(choices, {})
+    return similarity_fn(wordvec, choice_vec)
+
+def get_similarity_score(choices, wordvec, semantic_descriptors, similarity_fn): #Helper function to get the similarity score for a specific choice.
+    return compute_similarity(wordvec, choices, semantic_descriptors, similarity_fn)
+
 def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
-    max_similarity = -1
-    least_ind = 0
-    if word not in semantic_descriptors:
-        return choices[0]
-    # check if similarity can be computed
-    for i in range(len(choices)):
-        if choices[i] not in semantic_descriptors:
-            similarity = -1
-        else:
-            #check the semantic similarity
-            similarity = similarity_fn(semantic_descriptors[word], semantic_descriptors[choices[i]])
+    #returns the choice from choices that is most similar to the given word based on sematic descriptors and similarity function.
+    wordvec = semantic_descriptors.get(word)
+    if not wordvec:
+        return choices[0] #default choice if word is not in descriptors
 
-            #check if it xhanges the max value
-            if similarity > max_similarity:
-                max_similarity = similarity
-                least_ind = i
+    best_choice = choices[0]
+    best_score = -1000
 
-    return choices[least_ind]
-
+    for choice in choices:
+        score = get_similarity_score(choice, wordvec, semantic_descriptors, similarity_fn)
+        if score > best_score:
+            best_choice = choice
+            best_score = score
+    return best_choice
 
 def run_similarity_test(filename, semantic_descriptors, similarity_fn):
-    correct = 0
-    with open(filename, "r", encoding = "latin1") as file:
-        questions = file.split("\n")
-        for question in questions:
-            words = question.split()
-            target = words[0]
-            answer = words[1]
-            choices = words[2:]
-            guess = most_similar_word(target, choices, semantic_descriptors, similarity_fn)
-            if guess == answer:
-                correct+=1
-    
-        percent_correct = correct/len(questions) * 100
-    
-    return percent_correct
+    with open(filename, encoding="utf-8") as f:
+        lines = f.readlines() 
+    correct = 0 #tracks the amount of correct predictions 
+    for line in lines: #goes through all the lines and then splits them 
+        parts = line.split()
+        if not parts:
+            continue 
+        word, answer, *choices = parts
+        guess = most_similar_word(word, choices, semantic_descriptors, similarity_fn) #this makes a guess with the most similar word function 
+        if guess == answer:
+            correct += 1
+    return (correct / len(lines)) * 100 # calculates the accuracy percentage 
