@@ -97,8 +97,9 @@ def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
 def run_similarity_test(filename, semantic_descriptors, similarity_fn):
     correct = 0
     with open(filename, "r", encoding = "latin1") as file:
-        for questions in file.readlines():
-            words = questions.split()
+        questions = file.split("\n")
+        for question in questions:
+            words = question.split()
             target = words[0]
             answer = words[1]
             choices = words[2:]
@@ -106,6 +107,6 @@ def run_similarity_test(filename, semantic_descriptors, similarity_fn):
             if guess == answer:
                 correct+=1
     
-        percent_correct = correct/len(file.readlines) * 100
+        percent_correct = correct/len(questions) * 100
     
     return percent_correct
